@@ -26,6 +26,8 @@ export default function ScrollyCanvas() {
     for (let i = 0; i < FRAME_COUNT; i++) {
         const img = new Image();
         const frameIdx = String(i).padStart(3, "0");
+      img.decoding = "sync";       // Decode immediately
+            img.loading = "eager";
         img.src = `/sequence/frame_${frameIdx}_delay-0.066s.png`;
         img.onload = () => {
             loadedCount++;
