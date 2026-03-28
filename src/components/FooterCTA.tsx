@@ -3,80 +3,96 @@
 import { motion } from "framer-motion";
 import { SiGithub, SiInstagram } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
+import { Syne } from "next/font/google";
+
+// Font
+const syne = Syne({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export default function FooterCTA() {
   return (
-    <section className="bg-[#121212] py-32 px-8 relative overflow-hidden z-20 flex flex-col items-center justify-center min-h-[60vh]">
-      
-      {/* Animated Path/Particles Background */}
+    <section className={`${syne.className} bg-[#0e0e0e] py-32 px-6 md:px-12 relative overflow-hidden z-20 flex flex-col items-center justify-center min-h-[60vh]`}>
+
+      {/* Background Glow */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
-        <motion.div 
-            animate={{ 
-              scale: [1, 1.2, 1],
-              opacity: [0.1, 0.3, 0.1] 
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            className="w-[800px] h-[800px] bg-linear-to-tr from-[#3B82F6] to-[#06B6D4] rounded-full blur-[120px] mix-blend-screen"
+        <motion.div
+          animate={{
+            scale: [1, 1.15, 1],
+            opacity: [0.1, 0.25, 0.1]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="w-[700px] h-[700px] bg-linear-to-tr from-[#040505] to-[#060606] rounded-full blur-[120px]"
         />
       </div>
 
-      <motion.div 
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10 flex flex-col items-center text-center max-w-2xl w-full"
+      {/* Content */}
+      <motion.div
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="relative z-10 flex flex-col items-center text-center max-w-2xl w-full"
       >
-        <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-white mb-6">
-          Let&apos;s Build <br className="hidden md:block" /> Something Together
+        {/* Heading */}
+        <h2 className="text-4xl md:text-6xl font-semibold tracking-tight text-white mb-6 leading-tight">
+          Let’s Build Something <br className="hidden md:block" /> Meaningful Together
         </h2>
-        
-        <p className="text-xl text-gray-400 font-light mb-12 max-w-lg leading-relaxed">
-          Open to AI engineering roles, freelance projects, and collaborations.
+
+        {/* Subtext */}
+        <p className="text-white/60 text-lg mb-12 max-w-lg leading-relaxed">
+          I'm open to full-stack roles, freelance projects, and collaborations.
+          Let’s create scalable and impactful digital products.
         </p>
 
+        {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto mb-16">
-          <button 
-            onClick={() => window.location.href = "mailto:ahammedanasnihal@gmail.com"} // Replacing generic generic with a standard placeholder since I don't have the exact email address. Will add the user's name variant.
-            className="group relative px-8 py-4 bg-transparent border border-[#3B82F6] text-white rounded-full font-medium tracking-wide overflow-hidden hover:shadow-[0_0_40px_rgba(59,130,246,0.3)] transition-shadow duration-300"
+
+          {/* Email */}
+          <a
+            href="mailto:nitinpokhariya20@gmail.com"
+            className="group relative px-8 py-4 border border-white/20 text-white rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(255,255,255,0.15)]"
           >
-            <div className="absolute inset-0 bg-[#3B82F6] w-0 group-hover:w-full transition-all duration-300 ease-out" />
-            <span className="relative z-10">Get In Touch</span>
-          </button>
-          
-          <button 
+            <div className="absolute inset-0 bg-white w-0 group-hover:w-full transition-all duration-300 ease-out" />
+            <span className="relative z-10 group-hover:text-black transition-colors">
+              Get In Touch
+            </span>
+          </a>
+
+          {/* Resume */}
+          <button
             onClick={() => {
-              // Trigger Resume Download logic
               const link = document.createElement("a");
               link.href = "/resume.pdf";
-              link.download = "Anas_Resume.pdf";
+              link.download = "Nitin_Singh_Pokhariya_Resume.pdf";
               document.body.appendChild(link);
               link.click();
               document.body.removeChild(link);
             }}
-            className="px-8 py-4 bg-white text-black hover:bg-gray-200 rounded-full font-medium tracking-wide transition-colors duration-300 shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+            className="px-8 py-4 bg-white text-black rounded-full font-medium transition-all duration-300 hover:bg-gray-200 hover:shadow-[0_0_40px_rgba(255,255,255,0.25)]"
           >
             Download Resume
           </button>
         </div>
 
-        {/* Social Icons */}
+        {/* Socials */}
         <div className="flex items-center gap-8">
-          <a href="https://github.com/ahmmedanasnihal" target="_blank" rel="noreferrer" className="text-gray-500 hover:text-white hover:-translate-y-1 transition-all duration-300">
+          <a href="https://github.com/nitin102005" target="_blank" rel="noreferrer" className="text-white/40 hover:text-white hover:-translate-y-1 transition-all duration-300">
             <SiGithub className="w-6 h-6" />
           </a>
-          <a href="https://linkedin.com/in/ahmmedanasnihal" target="_blank" rel="noreferrer" className="text-gray-500 hover:text-[#0A66C2] hover:-translate-y-1 transition-all duration-300">
+          <a href="https://www.linkedin.com/in/nitin-singh-pokhariya-922a1a280/" target="_blank" rel="noreferrer" className="text-white/40 hover:text-[#0A66C2] hover:-translate-y-1 transition-all duration-300">
             <FaLinkedin className="w-6 h-6" />
           </a>
-          <a href="https://instagram.com/ahmmedanasnihal" target="_blank" rel="noreferrer" className="text-gray-500 hover:text-[#E4405F] hover:-translate-y-1 transition-all duration-300">
+          <a href="https://instagram.com/nitin_pokhariya" target="_blank" rel="noreferrer" className="text-white/40 hover:text-[#E4405F] hover:-translate-y-1 transition-all duration-300">
             <SiInstagram className="w-6 h-6" />
           </a>
         </div>
       </motion.div>
-      
-      {/* Footer copyright */}
-      <div className="absolute bottom-8 text-gray-600 text-sm font-light">
-        © {new Date().getFullYear()} Ahammed Anas Nihal. All rights reserved.
+
+      {/* Footer */}
+      <div className="absolute bottom-8 text-white/30 text-sm">
+        © {new Date().getFullYear()} Nitin Singh Pokhariya
       </div>
     </section>
   );
