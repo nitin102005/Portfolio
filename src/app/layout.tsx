@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Scrollytelling Portfolio",
+  title: "Portfolio",
   description: "A high-end personal portfolio built with Next.js and Framer Motion",
 };
 
