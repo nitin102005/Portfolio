@@ -326,7 +326,7 @@ export default function WhatIDo() {
               </h2>
             </div>
             <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end" }}>
-              <span className="wid-count">04</span>
+              <span className="wid-count">06</span>
               <span className="wid-footer-text">Areas of expertise</span>
             </div>
           </motion.div>
