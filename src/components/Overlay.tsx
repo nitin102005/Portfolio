@@ -1,5 +1,7 @@
 "use client";
 import { motion, MotionValue, useTransform } from "framer-motion";
+import { useEffect, useState } from "react";
+
 
 /**
  * ScrollyCanvas feeds this component `remappedProgress` — NOT raw scroll.
@@ -16,6 +18,14 @@ import { motion, MotionValue, useTransform } from "framer-motion";
  */
 
 export default function Overlay({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+  const check = () => setIsMobile(window.innerWidth < 768);
+  check();
+  window.addEventListener("resize", check);
+  return () => window.removeEventListener("resize", check);
+}, []);
 
   // ── S1: Hero — exits cleanly by 0.20 ────────────────────────────────────────
   const y1       = useTransform(scrollYProgress, [0, 0.20],              ["0vh",  "-50vh"]);
@@ -24,7 +34,11 @@ export default function Overlay({ scrollYProgress }: { scrollYProgress: MotionVa
 
   // ── S2: Left panel — enters 0.18, holds 0.24→0.46, exits 0.54 ──────────────
   const y2       = useTransform(scrollYProgress, [0.18, 0.24, 0.46, 0.54], ["24vh", "0vh", "0vh", "-2vh"]);
-  const opacity2 = useTransform(scrollYProgress, [0.18, 0.24, 0.44, 0.54], [0, 1, 1, 1]);
+  const opacity2 = useTransform(
+  scrollYProgress,
+  [0.18, 0.24, 0.44, 0.54],
+  isMobile ? [0, 1, 1, 0] : [0, 1, 1, 1]
+);
 
   // ── S3: Right panel — enters 0.50, holds 0.58→0.92, soft exit 0.92→1.00 ────
   // In raw-scroll terms: enters around scroll 0.46, holds until scroll ~0.93
@@ -93,12 +107,20 @@ export default function Overlay({ scrollYProgress }: { scrollYProgress: MotionVa
           line-height: 1.7;
           color: rgba(255,255,255,0.55);
         }
+          
 
         .nsp-rule {
           height: 1px;
           background: linear-gradient(90deg, var(--gold), transparent);
           margin: 1.4rem 0;
         }
+          @media (max-width: 768px) {
+  .nsp-body {
+    color: #fff;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+  }
+}
+ 
 
         .nsp-rule-rev {
           height: 1px;
@@ -186,7 +208,7 @@ export default function Overlay({ scrollYProgress }: { scrollYProgress: MotionVa
                 using React, Next.js, Node.js, Python, and MongoDB —
                 from concept to production.
               </p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "1.4rem" }}>
+              <div className="tech-tag" style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "1.4rem" }}>
                 {["React", "Next.js", "Node.js", "Python", "MongoDB"].map(t => (
                   <span key={t} style={{
                     fontFamily: "'JetBrains Mono',monospace",
