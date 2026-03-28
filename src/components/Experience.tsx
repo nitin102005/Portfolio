@@ -173,7 +173,7 @@ export default function Experience() {
               </h2>
             </div>
             <div className="flex flex-col items-end gap-1">
-              <span className="ex-ghost-num">03</span>
+              <span className="ex-ghost-num">05</span>
               <span className="font-['JetBrains_Mono'] text-[0.58rem]
                               uppercase tracking-[0.28em] text-white/[0.18]">
                 Roles &amp; Training
