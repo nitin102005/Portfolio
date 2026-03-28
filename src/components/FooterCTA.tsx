@@ -64,7 +64,7 @@ export default function FooterCTA() {
           <button
             onClick={() => {
               const link = document.createElement("a");
-              link.href = "/resume.pdf";
+           link.href = "/Nitin_Singh_Pokhariya_Resume.pdf";
               link.download = "Nitin_Singh_Pokhariya_Resume.pdf";
               document.body.appendChild(link);
               link.click();
