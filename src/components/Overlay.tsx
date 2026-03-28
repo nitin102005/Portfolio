@@ -79,7 +79,7 @@ export default function Overlay({ scrollYProgress }: { scrollYProgress: MotionVa
           font-weight: 600;
           letter-spacing: 0.35em;
           text-transform: uppercase;
-          color: rgba(255,255,255,0.6);
+         
         }
 
         .nsp-badge {
