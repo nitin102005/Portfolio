@@ -1,184 +1,396 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Briefcase } from "lucide-react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  AnimatePresence,
+  type Variants,
+} from "framer-motion";
+import { useRef, useState, useCallback } from "react";
 
+/* ─── Data ────────────────────────────────────────────────────────── */
+const experiences = [
+  {
+    index: "01",
+    role: "Full Stack Developer Intern",
+    company: "Z-First",
+    period: "Sep 2025 — Nov 2025",
+    location: "Remote · Gurugram, India",
+    type: "Internship",
+    points: [
+      "Developed responsive frontend using React.js.",
+      "Built backend APIs using FastAPI and Python.",
+      "Managed databases with MongoDB and PostgreSQL.",
+      "Worked on real-world features and improved application performance.",
+    ],
+  },
+  {
+    index: "02",
+    role: "AI Intern",
+    company: "Edunet Foundation",
+    period: "Feb 2024 — Mar 2024",
+    location: "Remote",
+    type: "Internship",
+    points: [
+      "Completed AI internship under TechSaksham by Microsoft, SAP & Edunet.",
+      "Worked on hands-on AI projects and learning modules.",
+      "Strengthened fundamentals of full-stack development.",
+    ],
+  },
+  {
+    index: "03",
+    role: "Full Stack Training Program",
+    company: "Learn & Build",
+    period: "2024",
+    location: "Remote",
+    type: "Training",
+    points: [
+      "Completed full-stack web development training program.",
+      "Built projects and improved frontend & backend fundamentals.",
+      "Completed Linux training with A grade certification.",
+    ],
+  },
+];
+
+/* ─── Motion constants ─────────────────────────────────────────────── */
+// Organic cubic — gentle accel, elastic-feeling settle
+const E = [0.19, 1, 0.22, 1] as const;
+
+// Spring for scroll-linked values: zero bounce, silk-smooth
+const SPRING = { stiffness: 55, damping: 18, mass: 0.5 };
+
+/* ─── AnimatePresence variants ─────────────────────────────────────── */
+const listVariants: Variants = {
+  hidden:  {},
+  visible: { transition: { staggerChildren: 0.055, delayChildren: 0.1 } },
+  exit:    { transition: { staggerChildren: 0.025, staggerDirection: -1 } },
+};
+
+const itemVariants: Variants = {
+  hidden:   { opacity: 0, x: 14, filter: "blur(4px)" },
+  visible:  {
+    opacity: 1, x: 0, filter: "blur(0px)",
+    transition: { duration: 0.46, ease: [0.19, 1, 0.22, 1] },
+  },
+  exit: {
+    opacity: 0, x: -5, filter: "blur(2px)",
+    transition: { duration: 0.22, ease: "easeIn" as const },
+  },
+};
+
+const metaVariants: Variants = {
+  hidden:  { opacity: 0, y: 10 },
+  visible: (i: number) => ({
+    opacity: 1, y: 0,
+    transition: { duration: 0.4, ease: [0.19, 1, 0.22, 1], delay: 0.07 + i * 0.05 },
+  }),
+  exit: {
+    opacity: 0, y: -4,
+    transition: { duration: 0.18, ease: "easeIn" as const },
+  },
+};
+
+/* ─── Component ────────────────────────────────────────────────────── */
 export default function Experience() {
+  const [active, setActive] = useState<number>(0);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const toggle = useCallback(
+    (i: number) => setActive(prev => (prev === i ? -1 : i)),
+    []
+  );
+
+  /* Scroll-linked header — spring-smoothed so it never judders */
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 0.9", "start 0.1"],
+  });
+  const sp      = useSpring(scrollYProgress, SPRING);
+  const headerY = useTransform(sp, [0, 1], [36, 0]);
+  const headerO = useTransform(sp, [0, 0.55], [0, 1]);
+
   return (
-    <section className="bg-[#121212] py-32 px-8 text-white relative z-20 overflow-hidden">
-      <div className="max-w-4xl mx-auto">
-        <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
-        >
-          <h3 className="text-sm font-medium tracking-widest text-[#3B82F6] uppercase mb-16 flex items-center gap-4">
-            <span className="w-12 h-px bg-[#3B82F6]/50"></span>
-            Experience
-          </h3>
-        </motion.div>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@300;400&family=Outfit:wght@300;400&display=swap');
 
-        <div className="relative">
-          {/* Vertical Line */}
-          <div className="absolute left-[27px] top-4 bottom-0 w-[2px] bg-white/5" />
+        /* Only what Tailwind can't express */
 
-          {/* Timeline Item */}
-          <div className="relative">
-  {/* Vertical Line */}
-  <div className="absolute left-[27px] top-4 bottom-0 w-[2px] bg-white/5" />
+        .ex-h { font-family:'Syne',sans-serif; font-size:clamp(2.8rem,7vw,5.5rem); font-weight:800; color:#fff; line-height:0.9; letter-spacing:-0.04em; }
+        .ex-h-ghost { -webkit-text-stroke:1px rgba(255,255,255,0.2); color:transparent; }
+        .ex-ghost-num { font-family:'Syne',sans-serif; font-size:clamp(4rem,11vw,8rem); font-weight:800; color:rgba(255,255,255,0.04); line-height:1; letter-spacing:-0.06em; user-select:none; }
 
-  {/* 🔹 1. Z-First Internship */}
-  <motion.div 
-    initial={{ opacity: 0, x: -30 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 0.6, delay: 0.2 }}
-    className="relative pl-20 sm:pl-32 mb-16"
-  >
-    <div className="absolute left-[13px] top-6 w-[30px] h-[30px] bg-[#121212] rounded-full flex items-center justify-center">
-      <div className="w-3 h-3 rounded-full bg-[#06B6D4] shadow-[0_0_15px_#06B6D4] animate-pulse" />
-    </div>
+        /* Noise texture overlay */
+        .ex-noise::before {
+          content:''; position:absolute; inset:0; pointer-events:none;
+          background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+          opacity:0.03;
+        }
 
-    <div className="group relative p-8 md:p-10 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all duration-500">
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-linear-to-b from-[#3B82F6] via-[#06B6D4] to-transparent opacity-50 group-hover:opacity-100" />
+        /* CSS colour transitions — smoother than JS-driven re-renders */
+        .tr-color  { transition: color       0.44s cubic-bezier(0.19,1,0.22,1); }
+        .tr-border { transition: border-color 0.44s cubic-bezier(0.19,1,0.22,1); }
+        .tr-all    { transition: color 0.44s cubic-bezier(0.19,1,0.22,1),
+                                border-color 0.44s cubic-bezier(0.19,1,0.22,1),
+                                background   0.44s cubic-bezier(0.19,1,0.22,1); }
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h4 className="text-2xl font-bold flex items-center gap-3">
-            <Briefcase className="w-6 h-6 text-[#3B82F6]" />
-            Full Stack Developer Intern
-          </h4>
-          <p className="text-[#06B6D4] mt-2 font-medium">Z-First</p>
+        /* Hide period on very small screens */
+        @media(max-width:480px){ .ex-period { display:none; } }
+        @media(max-width:580px){ .ex-company{ display:none; } }
+      `}</style>
+
+      <section
+        ref={sectionRef}
+        className="ex-noise relative z-20 overflow-hidden bg-[#0a0a0a]
+                   px-[clamp(1.5rem,6vw,4rem)] py-[clamp(5rem,10vw,9rem)]"
+      >
+        {/* Top / bottom hairlines */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px
+                        bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent)]" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px
+                        bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent)]" />
+
+        <div className="mx-auto max-w-[1100px]">
+
+          {/* ── Header ─────────────────────────────────────────── */}
+          <motion.div
+            style={{ y: headerY, opacity: headerO }}
+            className="mb-[clamp(3.5rem,7vw,6rem)] flex flex-wrap items-end
+                       justify-between gap-8 border-b border-white/[0.06]
+                       pb-[clamp(2rem,4vw,3rem)]"
+          >
+            <div>
+              <p className="mb-4 flex items-center gap-3 font-['JetBrains_Mono']
+                            text-[0.6rem] uppercase tracking-[0.38em] text-white/30">
+                <span className="inline-block h-px w-[26px] bg-white/[0.18]" />
+                Experience
+              </p>
+              <h2 className="ex-h">
+                Where I've<br />
+                <span className="ex-h-ghost">shipped.</span>
+              </h2>
+            </div>
+            <div className="flex flex-col items-end gap-1">
+              <span className="ex-ghost-num">03</span>
+              <span className="font-['JetBrains_Mono'] text-[0.58rem]
+                              uppercase tracking-[0.28em] text-white/[0.18]">
+                Roles &amp; Training
+              </span>
+            </div>
+          </motion.div>
+
+          {/* ── Accordion ──────────────────────────────────────── */}
+          <div className="flex flex-col">
+            {experiences.map((exp, i) => {
+              const isOpen = active === i;
+
+              return (
+                <motion.div
+                  key={exp.index}
+                  className="cursor-pointer overflow-hidden border-b border-white/[0.07]
+                             first:border-t first:border-t-white/[0.07]"
+                  style={{ willChange: "transform, opacity" }}
+                  initial={{ opacity: 0, y: 32 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.72, ease: E, delay: i * 0.1 }}
+                  onClick={() => toggle(i)}
+                >
+                  {/* ── Trigger row ─ */}
+                  <div className="relative flex select-none items-center
+                                  gap-[clamp(0.75rem,2.5vw,2rem)]
+                                  py-[clamp(1.3rem,2.8vw,2rem)]">
+
+                    {/* Sweeping fill */}
+                    <motion.div
+                      className="pointer-events-none absolute inset-0 z-0
+                                 origin-left bg-[#e8e4dc]"
+                      style={{ willChange: "transform" }}
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: isOpen ? 1 : 0 }}
+                      transition={{ duration: 0.54, ease: E }}
+                    />
+
+                    {/* Index */}
+                    <span
+                      className="tr-color relative z-10 min-w-[2rem] flex-shrink-0
+                                 font-['JetBrains_Mono'] text-[0.58rem] tracking-[0.22em]"
+                      style={{ color: isOpen ? "rgba(10,10,10,0.3)" : "rgba(255,255,255,0.2)" }}
+                    >
+                      {exp.index}
+                    </span>
+
+                    {/* Type badge */}
+                    <span
+                      className="tr-all relative z-10 flex-shrink-0 rounded-[2px] border
+                                 px-[0.65rem] py-[0.25rem] font-['JetBrains_Mono']
+                                 text-[0.56rem] uppercase tracking-[0.2em]"
+                      style={{
+                        color:       isOpen ? "rgba(10,10,10,0.5)"  : "rgba(255,255,255,0.3)",
+                        borderColor: isOpen ? "rgba(10,10,10,0.2)"  : "rgba(255,255,255,0.1)",
+                      }}
+                    >
+                      {exp.type}
+                    </span>
+
+                    {/* Role */}
+                    <span
+                      className="tr-color relative z-10 flex-1 font-['Syne']
+                                 text-[clamp(1rem,2.2vw,1.45rem)] font-bold leading-[1.1]"
+                      style={{ color: isOpen ? "#0a0a0a" : "#fff" }}
+                    >
+                      {exp.role}
+                    </span>
+
+                    {/* Company */}
+                    <span
+                      className="ex-company tr-color relative z-10 flex-shrink-0
+                                 font-['JetBrains_Mono'] text-[0.62rem]
+                                 uppercase tracking-[0.18em]"
+                      style={{ color: isOpen ? "rgba(10,10,10,0.4)" : "rgba(255,255,255,0.3)" }}
+                    >
+                      {exp.company}
+                    </span>
+
+                    {/* Period */}
+                    <span
+                      className="ex-period tr-color relative z-10 flex-shrink-0
+                                 font-['JetBrains_Mono'] text-[0.6rem] tracking-[0.15em]"
+                      style={{ color: isOpen ? "rgba(10,10,10,0.35)" : "rgba(255,255,255,0.25)" }}
+                    >
+                      {exp.period}
+                    </span>
+
+                    {/* Toggle icon */}
+                    <div
+                      className="tr-border relative z-10 flex h-[22px] w-[22px]
+                                 flex-shrink-0 items-center justify-center rounded-full border"
+                      style={{
+                        borderColor: isOpen ? "rgba(10,10,10,0.2)" : "rgba(255,255,255,0.15)",
+                      }}
+                    >
+                      <motion.svg
+                        width="10" height="10" viewBox="0 0 10 10"
+                        style={{ willChange: "transform" }}
+                        animate={{ rotate: isOpen ? 45 : 0 }}
+                        transition={{ duration: 0.4, ease: E }}
+                      >
+                        <line x1="5" y1="0" x2="5" y2="10"
+                          stroke={isOpen ? "#0a0a0a" : "rgba(255,255,255,0.6)"}
+                          strokeWidth="1.2" strokeLinecap="round" />
+                        <line x1="0" y1="5" x2="10" y2="5"
+                          stroke={isOpen ? "#0a0a0a" : "rgba(255,255,255,0.6)"}
+                          strokeWidth="1.2" strokeLinecap="round" />
+                      </motion.svg>
+                    </div>
+                  </div>
+
+                  {/* ── Expanded panel ─ */}
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        key="panel"
+                        className="overflow-hidden mt-3"
+                        style={{ willChange: "height, opacity" }}
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{
+                          height:  { duration: 0.56, ease: E },
+                          opacity: { duration: 0.4,  ease: "easeOut" },
+                        }}
+                      >
+                        <div
+                          className="grid gap-[clamp(1.5rem,4vw,3rem)]
+                                     pb-[clamp(1.4rem,3vw,2.2rem)]
+                                     pl-[clamp(2.5rem,6vw,5rem)]
+                                     [grid-template-columns:200px_1fr]
+                                     max-[640px]:[grid-template-columns:1fr]"
+                        >
+                          {/* Meta */}
+                          <div
+                            className="flex flex-col gap-[1.1rem] border-r border-white/[0.06] pr-6
+                                       max-[640px]:border-b max-[640px]:border-r-0
+                                       max-[640px]:pb-5 max-[640px]:pr-0"
+                          >
+                            {[
+                              { label: "Company",  val: exp.company  },
+                              { label: "Period",   val: exp.period   },
+                              { label: "Location", val: exp.location },
+                              { label: "Type",     val: exp.type     },
+                            ].map((m, mi) => (
+                              <motion.div
+                                key={m.label}
+                                className="flex flex-col gap-[0.2rem]"
+                                custom={mi}
+                                variants={metaVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                              >
+                                <span className="font-['JetBrains_Mono'] text-[0.52rem]
+                                                 uppercase tracking-[0.28em] text-white/20">
+                                  {m.label}
+                                </span>
+                                <span className="font-['Outfit'] text-[0.88rem]
+                                                 font-light text-white/50">
+                                  {m.val}
+                                </span>
+                              </motion.div>
+                            ))}
+                          </div>
+
+                          {/* Points */}
+                          <motion.ul
+                            className="flex flex-col gap-3"
+                            variants={listVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                          >
+                            {exp.points.map((pt, j) => (
+                              <motion.li
+                                key={j}
+                                className="flex items-start gap-3 font-['Outfit']
+                                           text-[clamp(0.85rem,1.2vw,0.95rem)]
+                                           font-light leading-[1.65] text-white/[0.45]"
+                                variants={itemVariants}
+                              >
+                                <span className="mt-[0.58em] inline-block h-px
+                                                 w-[14px] flex-shrink-0 bg-white/[0.18]" />
+                                {pt}
+                              </motion.li>
+                            ))}
+                          </motion.ul>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* ── Footer ─────────────────────────────────────────── */}
+          <motion.div
+            className="mt-[clamp(2.5rem,5vw,4rem)] flex items-center gap-6"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: E, delay: 0.5 }}
+          >
+            <div className="h-px flex-1 bg-white/[0.05]" />
+            <span className="whitespace-nowrap font-['JetBrains_Mono']
+                             text-[0.58rem] uppercase tracking-[0.3em] text-white/[0.18]">
+              Experience · 2024–2025
+            </span>
+            <div className="h-px flex-1 bg-white/[0.05]" />
+          </motion.div>
+
         </div>
-        <div className="text-left md:text-right">
-          <span className="inline-block px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-sm text-gray-300 font-mono">
-            Sep 2025 — Nov 2025
-          </span>
-          <p className="text-gray-500 text-sm mt-2">Remote · Gurugram, India</p>
-        </div>
-      </div>
-
-      <ul className="space-y-4 text-gray-400 font-light">
-        <li className="relative pl-6">
-          <span className="absolute left-0 top-2.5 w-2 h-[2px] bg-[#3B82F6]/50" />
-          Developed responsive frontend using React.js.
-        </li>
-        <li className="relative pl-6">
-          <span className="absolute left-0 top-2.5 w-2 h-[2px] bg-[#3B82F6]/50" />
-          Built backend APIs using FastAPI and Python.
-        </li>
-        <li className="relative pl-6">
-          <span className="absolute left-0 top-2.5 w-2 h-[2px] bg-[#3B82F6]/50" />
-          Managed databases with MongoDB and PostgreSQL.
-        </li>
-        <li className="relative pl-6">
-          <span className="absolute left-0 top-2.5 w-2 h-[2px] bg-[#3B82F6]/50" />
-          Worked on real-world features and improved application performance.
-        </li>
-      </ul>
-    </div>
-  </motion.div>
-
-  {/* 🔹 2. Edunet Internship */}
-  <motion.div 
-    initial={{ opacity: 0, x: -30 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 0.6, delay: 0.3 }}
-    className="relative pl-20 sm:pl-32 mb-16"
-  >
-    <div className="absolute left-[13px] top-6 w-[30px] h-[30px] bg-[#121212] rounded-full flex items-center justify-center">
-      <div className="w-3 h-3 rounded-full bg-[#3B82F6] shadow-[0_0_15px_#3B82F6] animate-pulse" />
-    </div>
-
-    <div className="group relative p-8 md:p-10 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all duration-500">
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-linear-to-b from-[#3B82F6] via-[#06B6D4] to-transparent opacity-50 group-hover:opacity-100" />
-
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h4 className="text-2xl font-bold flex items-center gap-3">
-            <Briefcase className="w-6 h-6 text-[#3B82F6]" />
-            AI Intern
-          </h4>
-          <p className="text-[#06B6D4] mt-2 font-medium">Edunet Foundation</p>
-        </div>
-        <div className="text-left md:text-right">
-          <span className="inline-block px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-sm text-gray-300 font-mono">
-            Feb 2024 — Mar 2024
-          </span>
-          <p className="text-gray-500 text-sm mt-2">Remote</p>
-        </div>
-      </div>
-
-      <ul className="space-y-4 text-gray-400 font-light">
-        <li className="relative pl-6">
-          <span className="absolute left-0 top-2.5 w-2 h-[2px] bg-[#3B82F6]/50" />
-          Completed AI internship under TechSaksham by Microsoft, SAP & Edunet.
-        </li>
-        <li className="relative pl-6">
-          <span className="absolute left-0 top-2.5 w-2 h-[2px] bg-[#3B82F6]/50" />
-          Worked on hands-on AI projects and learning modules.
-        </li>
-        <li className="relative pl-6">
-          <span className="absolute left-0 top-2.5 w-2 h-[2px] bg-[#3B82F6]/50" />
-          Strengthened fundamentals of full-stack development.
-        </li>
-      </ul>
-    </div>
-  </motion.div>
-
-  {/* 🔹 3. Learn & Build Training */}
-  <motion.div 
-    initial={{ opacity: 0, x: -30 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 0.6, delay: 0.4 }}
-    className="relative pl-20 sm:pl-32"
-  >
-    <div className="absolute left-[13px] top-6 w-[30px] h-[30px] bg-[#121212] rounded-full flex items-center justify-center">
-      <div className="w-3 h-3 rounded-full bg-[#22C55E] shadow-[0_0_15px_#22C55E] animate-pulse" />
-    </div>
-
-    <div className="group relative p-8 md:p-10 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all duration-500">
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-linear-to-b from-[#22C55E] to-transparent opacity-50" />
-
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h4 className="text-2xl font-bold flex items-center gap-3">
-            <Briefcase className="w-6 h-6 text-[#22C55E]" />
-            Full Stack Training Program
-          </h4>
-          <p className="text-[#22C55E] mt-2 font-medium">Learn & Build</p>
-        </div>
-        <div className="text-left md:text-right">
-          <span className="inline-block px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-sm text-gray-300 font-mono">
-            2024
-          </span>
-          <p className="text-gray-500 text-sm mt-2">Remote</p>
-        </div>
-      </div>
-
-      <ul className="space-y-4 text-gray-400 font-light">
-        <li className="relative pl-6">
-          <span className="absolute left-0 top-2.5 w-2 h-[2px] bg-[#22C55E]/50" />
-          Completed full-stack web development training program.
-        </li>
-        <li className="relative pl-6">
-          <span className="absolute left-0 top-2.5 w-2 h-[2px] bg-[#22C55E]/50" />
-          Built projects and improved frontend & backend fundamentals.
-        </li>
-        <li className="relative pl-6">
-          <span className="absolute left-0 top-2.5 w-2 h-[2px] bg-[#22C55E]/50" />
-          Completed Linux training with A grade certification.
-        </li>
-      </ul>
-    </div>
-  </motion.div>
-</div>
-          
-        </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
