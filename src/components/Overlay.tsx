@@ -183,7 +183,9 @@ export default function Overlay({ scrollYProgress }: { scrollYProgress: MotionVa
           <h1 className="nsp-name">
             Nitin Singh<br />Pokhariya
           </h1>
-          <p className="nsp-role">Full-Stack Developer</p>
+         <p className="nsp-role text-black drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)]">
+  Full-Stack Developer
+</p>
         </motion.div>
 
         {/* ── S2: Left panel ───────────────────────────────────────────────── */}
